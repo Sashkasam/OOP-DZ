@@ -1,4 +1,7 @@
 
+from re import A
+
+
 class Student:
     def __init__(self, name, surname, gender):
         self.name = name
@@ -61,7 +64,7 @@ class Lecturer(Mentor):
         self.grades = {}
 
     def _average_rating(self):
-        result = sum(*self.grades.values()) / len(*self.grades.values())
+        result = round(sum(*self.grades.values()) / len(*self.grades.values()),1)
         return result
     
     def __str__(self):
@@ -74,30 +77,112 @@ class Lecturer(Mentor):
             return
         return self._average_rating() < other._average_rating()
 
-best_student = Student('Ruoy', 'Eman', 'your_gender')
-best_student.courses_in_progress += ['Python','Git']
-best_student.finished_courses = ['Введение в программирование']
- 
-cool_reviewer = Reviewer('Some', 'Buddy')
-cool_reviewer.courses_attached += ['Python']
+# Создаем студентов и определяем для них изучаемые и завершенные курсы
+first_student = Student('Polina', 'Samoilova', 'female')
+first_student.courses_in_progress += ['Python','Java']
+first_student.finished_courses += ['Введение в программирование']
 
- 
-cool_reviewer.rate_hw(best_student, 'Python', 10)
-cool_reviewer.rate_hw(best_student, 'Python', 10)
-cool_reviewer.rate_hw(best_student, 'Python', 10)
+second_student = Student('Alexsander', 'Samoilov', 'male')
+second_student.courses_in_progress += ['Python','Java']
+second_student.finished_courses += ['Введение в программирование']
 
-cool_lecturer = Lecturer('Some','Buddy')
-cool_lecturer.courses_attached += ['Python']
+third_student = Student('Ksenia', 'Samoilova', 'female')
+third_student.courses_in_progress += ['Python','Java']
+third_student.finished_courses += ['Введение в программирование']
 
-best_student.rate_lecturer(cool_lecturer, 'Python', 9)
-best_student.rate_lecturer(cool_lecturer, 'Python', 8)
-best_student.rate_lecturer(cool_lecturer, 'Python', 10)
+# Создаем лекторов и закрепляем за ними курсы
+first_lecturer = Lecturer('Pavel', 'Ivanov')
+first_lecturer.courses_attached += ['Python']
+
+second_lecturer = Lecturer('Anna', 'Gorodilova')
+second_lecturer.courses_attached += ['Java']
+
+third_lecturer = Lecturer('Alex', 'Petrov')
+third_lecturer.courses_attached += ['Python']
+
+# Создаем ревьюеров и закрепляем за ними курсы
+first_reviewer = Reviewer('Ivan', 'Ivanov')
+first_reviewer.courses_attached += ['Python']
+
+second_reviewer = Reviewer('Nikolai', 'Smirnov')
+second_reviewer.courses_attached += ['Java']
+
+# Выставляем студентами оценки лекторам за лекции
+first_student.rate_lecturer(first_lecturer, 'Python', 10)
+first_student.rate_lecturer(first_lecturer, 'Python', 9)
+first_student.rate_lecturer(second_lecturer, 'Java', 9)
+first_student.rate_lecturer(second_lecturer, 'Java', 8)
+first_student.rate_lecturer(third_lecturer, 'Python', 8)
+first_student.rate_lecturer(third_lecturer, 'Python', 10)
+
+second_student.rate_lecturer(first_lecturer, 'Python', 9)
+second_student.rate_lecturer(first_lecturer, 'Python', 9)
+second_student.rate_lecturer(second_lecturer, 'Java', 10)
+second_student.rate_lecturer(second_lecturer, 'Java', 9)
+second_student.rate_lecturer(third_lecturer, 'Python', 9)
+second_student.rate_lecturer(third_lecturer, 'Python', 7)
+
+third_student.rate_lecturer(first_lecturer, 'Python',8)
+third_student.rate_lecturer(first_lecturer, 'Python',9)
+third_student.rate_lecturer(second_lecturer, 'Java',9)
+third_student.rate_lecturer(second_lecturer, 'Java',10)
+third_student.rate_lecturer(third_lecturer, 'Python',7)
+third_student.rate_lecturer(third_lecturer, 'Python',8)
+
+# Выставляем  ревьюерами оценки студентам за домашние задания
+
+first_reviewer.rate_hw(first_student, 'Python', 10)
+first_reviewer.rate_hw(first_student, 'Python', 9)
+first_reviewer.rate_hw(second_student, 'Java', 9)
+first_reviewer.rate_hw(second_student, 'Java', 7)
+first_reviewer.rate_hw(third_student, 'Python', 9)
+first_reviewer.rate_hw(third_student, 'Python', 10)
+
+second_reviewer.rate_hw(first_student, 'Python', 9)
+second_reviewer.rate_hw(first_student, 'Python', 7)
+second_reviewer.rate_hw(second_student, 'Java', 8)
+second_reviewer.rate_hw(second_student, 'Java', 9)
+second_reviewer.rate_hw(third_student, 'Python', 8)
+second_reviewer.rate_hw(third_student, 'Python', 7)
 
 
- 
-# print(cool_lecturer.grades)
-# print(best_student.grades)
+students_list = [first_student,second_student,third_student]
+lectures_list = [first_lecturer,second_lecturer,third_lecturer]
 
-# print(cool_reviewer)
-# print(cool_lecturer)
-# print(best_student)
+students_grades_list = []
+def average_students(students_list,course):
+    for student in students_list:
+        for key,value in student.grades.items():
+            if key is course:
+                students_grades_list.extend(value)
+    result = round(sum(students_grades_list) / len(students_grades_list),1)
+    print(f'Средний бал по всем студентам курса {course}: {result}')
+
+lectures_grades_list = []
+def average_lectures(lectures_list,course):
+    for lecturer in lectures_list:
+        for key,value in lecturer.grades.items():
+            if key is course:
+                lectures_grades_list.extend(value)
+    result = round(sum(lectures_grades_list) / len(lectures_grades_list),1)
+    print(f'Средний бал по всем лекторам курса {course}: {result}')
+
+
+
+
+print(f'Список всех студентов: \n\n{first_student}\n\n{second_student}\n\n{third_student}')
+print()
+print(f'Список всех лекторов: \n\n{first_lecturer}\n\n{second_lecturer}\n\n{third_lecturer}')
+print()
+print(f'Список ревьюеров: \n\n{first_reviewer}\n\n{second_reviewer}')
+print()
+print(first_student < second_student)
+print(second_student < third_student)
+print(first_lecturer < third_lecturer)
+print(second_lecturer > first_lecturer)
+print()
+average_students(students_list,'Python')
+average_students(students_list,'Java')
+print()
+average_lectures(lectures_list, 'Python')
+average_lectures(lectures_list, 'Java')
